@@ -1,94 +1,206 @@
-# Hi, I'm Fekri 👋
+# 🥇 Gold-Signal-Bot — AI-Powered XAUUSD Trading System
 
-### Python Bot Engineer · Trading Systems · AI Automation
+[![Python](https://img.shields.io/badge/Python-3.12-blue?style=flat&logo=python)](https://python.org)
+[![Telegram](https://img.shields.io/badge/Telegram-Bot-2CA5E0?style=flat&logo=telegram)](https://core.telegram.org/bots)
+[![Claude AI](https://img.shields.io/badge/Claude-Sonnet-orange?style=flat)](https://anthropic.com)
+[![DigitalOcean](https://img.shields.io/badge/DigitalOcean-Live-0080FF?style=flat&logo=digitalocean)](https://digitalocean.com)
+[![Status](https://img.shields.io/badge/Status-Live%20Production-brightgreen?style=flat)]()
 
-[![Upwork](https://img.shields.io/badge/Upwork-Available-brightgreen?style=flat&logo=upwork)](https://www.upwork.com/freelancers/~012fc9851c97860336)
-[![Email](https://img.shields.io/badge/Email-fikriteacher@gmail.com-blue?style=flat&logo=gmail)](mailto:fikriteacher@gmail.com)
-[![Location](https://img.shields.io/badge/Location-Lebanon%20UTC%2B3-orange?style=flat&logo=googlemaps)](https://github.com/fikrigoldbot)
+> Autonomous 24/7 trading bot for XAUUSD (Gold/USD) — powered by Claude AI, MetaTrader 5, and deployed on DigitalOcean Ubuntu server.
 
 ---
 
-## 🤖 What I Build
+## 📸 Live System
 
-I specialize in **production-grade bots and automation systems** — code that runs 24/7 on real servers, not demos.
+```
+root@trading-bot-fra:~# pm2 list
 
+┌─────┬────────────────┬──────┬──────┬─────────┬─────┬────────┐
+│ id  │ name           │ mode │  ↺   │ status  │ cpu │ memory │
+├─────┼────────────────┼──────┼──────┼─────────┼─────┼────────┤
+│  7  │ fikri-ai       │ fork │  2   │ online  │ 0%  │ 65.1mb │
+│  0  │ telegram-panel │ fork │  77  │ online  │ 0%  │ 41.5mb │
+└─────┴────────────────┴──────┴──────┴─────────┴─────┴────────┘
+
+Server: Ubuntu 24.04.3 LTS | Python 3.12.3 | PM2 7.0.1
+IP: 207.154.221.67 | Uptime: 24/7
+```
+
+```
+08:31:05 [GOLD] ATR=13.00  SL=19.50  TP=39.00  Spread=0.04
+08:31:05 [GOLD] Asking Claude...
+08:31:10 [GOLD] ACTION: SELL   CONFIDENCE: 52
+08:31:10 [GOLD] HOLD conf=52% (min 70%) — Risk Guard Active
+09:16:04 [GOLD] ATR=9.69  SL=14.53  TP=29.07
+09:16:04 [GOLD] Asking Claude...
+09:16:10 [GOLD] ACTION: BUY   CONFIDENCE: 84
+09:16:10 [GOLD] ✅ TRADE EXECUTED — BUY 0.01 XAUUSD
+```
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│           DigitalOcean Ubuntu Server         │
+│                                             │
+│  ┌──────────────┐    ┌──────────────────┐  │
+│  │  fikri-ai    │    │  telegram-panel  │  │
+│  │  (PM2 fork)  │    │  (PM2 fork)      │  │
+│  └──────┬───────┘    └────────┬─────────┘  │
+│         │                     │             │
+└─────────┼─────────────────────┼─────────────┘
+          │                     │
+    ┌─────▼──────┐        ┌─────▼──────┐
+    │ MetaAPI    │        │  Telegram  │
+    │ Cloud SDK  │        │  Bot API   │
+    │ (MT5 Live) │        │ 9 buttons  │
+    └─────┬──────┘        └────────────┘
+          │
+    ┌─────▼──────┐
+    │  Claude AI │
+    │  Sonnet    │
+    │ (Anthropic)│
+    └────────────┘
+```
+
+---
+
+## ⚙️ Core Components
+
+### 1. Trading Bot (`golden_edge_bot_v3.3.py`) — 791 lines
+- Async Python with `asyncio/await`
+- Connects to MT5 via MetaAPI Cloud SDK v29+
+- Fetches OHLCV data: **D1, H4, H1, M15** simultaneously
+- Calculates: **EMA20, EMA50, ATR** per timeframe
+- Builds structured AI prompt with full market context
+- Sends to **Claude Sonnet** → receives BUY/SELL/HOLD + confidence
+- Executes trades only when confidence ≥ 70%
+
+### 2. Telegram Control Panel (`telegram_panel_v2.py`)
+```
+📱 9-Button Interface:
+[📊 Status]  [📋 Logs]   [💰 Balance]
+[🧠 Memory]  [▶️ Start]  [⏹ Stop]
+[🔄 Restart] [📄 Full Logs] [❌ Close Trade]
+```
+
+### 3. Risk Management Engine
+| Rule | Value |
+|------|-------|
+| Stop Loss | 1.5 × ATR |
+| Take Profit | 3.0 × ATR (1:2 RR) |
+| Daily Loss Cap | Auto-stop on limit hit |
+| Consecutive Loss Guard | Stop after 2 losses |
+| Breakeven | Move SL to entry at +1×ATR |
+| News Blackout | Auto-pause on NFP/FOMC |
+| Min Confidence | 70% (Claude AI) |
+
+### 4. Multi-Timeframe Analysis
 ```python
-skills = {
-    "Languages":   ["Python 3.12", "JavaScript", "MQL5"],
-    "Bots":        ["Telegram Bot API", "Discord", "WhatsApp"],
-    "Trading":     ["MetaTrader 5", "MetaAPI Cloud", "Crypto APIs"],
-    "AI":          ["Claude API (Anthropic)", "OpenRouter", "Prompt Engineering"],
-    "Backend":     ["Flask", "Django", "REST APIs", "Webhooks"],
-    "DevOps":      ["DigitalOcean", "Ubuntu", "PM2", "SSH", "Docker"],
-    "Databases":   ["MySQL", "SQLite", "PostgreSQL"],
+timeframes = {
+    "D1":  {"ema20": 2698.4, "ema50": 2651.2, "atr": 28.4, "trend": "BULLISH"},
+    "H4":  {"ema20": 2743.1, "ema50": 2721.8, "atr": 14.2, "trend": "BULLISH"},
+    "H1":  {"ema20": 2751.6, "ema50": 2748.3, "atr": 8.7,  "trend": "RANGING"},
+    "M15": {"ema20": 2749.2, "ema50": 2750.1, "atr": 4.1,  "trend": "BEARISH"},
 }
-```
-
----
-
-## 🚀 Featured Project
-
-### [Gold-Signal-Bot](https://github.com/fikrigoldbot/Gold-Signal-Bot) — Live AI Trading System
-
-> Autonomous XAUUSD trading bot running 24/7 on DigitalOcean
-
-- 🧠 **Claude AI** analyzes multi-timeframe data (D1, H4, H1, M15)
-- 📊 **Technical engine**: ATR, EMA20/50, Swing Point analysis
-- 🛡️ **Risk management**: Dynamic SL/TP, Daily loss cap, Breakeven
-- 📱 **Telegram panel**: 9-button control interface — start/stop/logs from phone
-- ⚙️ **Infrastructure**: PM2 + Ubuntu 24.04 + MetaAPI Cloud SDK v29+
-- 📈 **Result**: First profitable trade +$13.92 on night one
-
-```
-┌─────┬────────────────┬──────┬──────┬─────────┬────────┐
-│ id  │ name           │ mode │  ↺   │ status  │ memory │
-├─────┼────────────────┼──────┼──────┼─────────┼────────┤
-│  7  │ fikri-ai       │ fork │  2   │ online  │ 65.1mb │
-│  0  │ telegram-panel │ fork │  77  │ online  │ 41.5mb │
-└─────┴────────────────┴──────┴──────┴─────────┴────────┘
+# → All fed into Claude AI prompt for final decision
 ```
 
 ---
 
 ## 🛠️ Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
-![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-000000?style=flat&logo=flask&logoColor=white)
-![Django](https://img.shields.io/badge/Django-092E20?style=flat&logo=django&logoColor=white)
-![DigitalOcean](https://img.shields.io/badge/DigitalOcean-0080FF?style=flat&logo=digitalocean&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+| Layer | Technology |
+|-------|-----------|
+| Language | Python 3.12 (async/await) |
+| Trading API | MetaAPI Cloud SDK v29+ |
+| AI Brain | Claude Sonnet (Anthropic) via OpenRouter |
+| Notifications | Telegram Bot API (python-telegram-bot) |
+| Server | DigitalOcean Droplet — Ubuntu 24.04 LTS |
+| Process Manager | PM2 (auto-restart, crash recovery) |
+| News Feed | BBC / Reuters RSS parsing |
+| Broker | CFI — MetaTrader 5 live account |
 
 ---
 
-## 💼 Services
+## 📦 Installation
 
-| Service | Description | Delivery |
-|---------|-------------|----------|
-| 🤖 **Telegram Bots** | Signal bots, control panels, automation | 3-7 days |
-| 📈 **Trading Bots** | MT5 EAs, crypto bots, signal engines | 5-14 days |
-| ⚙️ **Python Automation** | Scripts, APIs, data pipelines | 2-5 days |
-| 🌐 **Backend APIs** | Flask/Django REST APIs + deployment | 5-10 days |
+```bash
+# Clone the repo
+git clone https://github.com/fikrigoldbot/Gold-Signal-Bot.git
+cd Gold-Signal-Bot
 
----
+# Install dependencies
+pip install -r requirements.txt
 
-## 📊 GitHub Stats
+# Configure environment
+cp .env.example .env
+# Edit .env with your API keys
 
-![Fikri's GitHub stats](https://github-readme-stats.vercel.app/api?username=fikrigoldbot&show_icons=true&theme=dark&hide_border=true&bg_color=0a0d12&title_color=f0b429&icon_color=00d4ff&text_color=e8edf5)
-
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=fikrigoldbot&layout=compact&theme=dark&hide_border=true&bg_color=0a0d12&title_color=f0b429&text_color=e8edf5)
-
----
-
-## 📫 Hire Me
-
-- 💼 **Upwork:** [View Profile](https://www.upwork.com/freelancers/~012fc9851c97860336)
-- 🌐 **Braintrust:** [View Profile](https://app.usebraintrust.com)
-- 📧 **Email:** fikriteacher@gmail.com
-- 📍 **Location:** Tyre, Lebanon (UTC+3) — available for remote work worldwide
+# Run with PM2
+pm2 start golden_edge_bot_v3.3.py --name fikri-ai --interpreter python3
+pm2 start telegram_panel_v2.py --name telegram-panel --interpreter python3
+pm2 save
+```
 
 ---
 
-*All projects deployed and running on live production servers · June 2026*
+## 🔑 Environment Variables
+
+```env
+# MetaAPI Cloud
+META_API_TOKEN=your_metaapi_token
+ACCOUNT_ID=your_mt5_account_id
+
+# AI
+OPENROUTER_API_KEY=your_openrouter_key
+
+# Telegram
+TELEGRAM_BOT_TOKEN=your_bot_token
+TELEGRAM_CHAT_ID=your_chat_id
+```
+
+---
+
+## 📊 Performance
+
+| Metric | Value |
+|--------|-------|
+| First trade P&L | +$13.92 |
+| Risk/Reward | 1:2 |
+| Min confidence threshold | 70% |
+| Uptime | 24/7 |
+| Version | v3.3 |
+| Lines of code | 791 |
+
+---
+
+## 🔄 Version History
+
+| Version | Changes |
+|---------|---------|
+| v3.3 | Added breakeven + trailing stop |
+| v3.2 | NFP/FOMC news blackout |
+| v3.1 | Multi-timeframe analysis |
+
+---
+
+## 👤 Author
+
+**Fekri Ismail Abdel Hamid**
+- 🌐 GitHub: [@fikrigoldbot](https://github.com/fikrigoldbot)
+- 💼 Upwork: [Profile](https://www.upwork.com/freelancers/~012fc9851c97860336)
+- 📧 Email: fikriteacher@gmail.com
+- 📍 Tyre, Lebanon (UTC+3)
+
+---
+
+## ⚠️ Disclaimer
+
+This bot is for educational and personal use. Trading involves significant risk. Past performance does not guarantee future results. Use at your own risk.
+
+---
+
+*Built with Python · Claude AI · MetaTrader 5 · DigitalOcean · June 2026*
