@@ -2,7 +2,7 @@
 
 ### Python Bot Engineer · Trading Systems · AI Automation
 
-[![Upwork](https://img.shields.io/badge/Upwork-Available-brightgreen?style=flat&logo=upwork)]([https://www.upwork.com/freelancers/~yourprofile](https://www.upwork.com/freelancers/~012fc9851c97860336?mp_source=share))
+[![Upwork](https://img.shields.io/badge/Upwork-Available-brightgreen?style=flat&logo=upwork)](https://www.upwork.com/freelancers/~012fc9851c97860336)
 [![Email](https://img.shields.io/badge/Email-fikriteacher@gmail.com-blue?style=flat&logo=gmail)](mailto:fikriteacher@gmail.com)
 [![Location](https://img.shields.io/badge/Location-Lebanon%20UTC%2B3-orange?style=flat&logo=googlemaps)](https://github.com/fikrigoldbot)
 
@@ -40,13 +40,12 @@ skills = {
 - 📈 **Result**: First profitable trade +$13.92 on night one
 
 ```
-pm2 list
-┌─────┬────────────────┬──────┬──────┬─────────┬─────┬────────┐
-│ id  │ name           │ mode │  ↺   │ status  │ cpu │ memory │
-├─────┼────────────────┼──────┼──────┼─────────┼─────┼────────┤
-│  7  │ fikri-ai       │ fork │  2   │ online  │ 0%  │ 65.1mb │
-│  0  │ telegram-panel │ fork │  77  │ online  │ 0%  │ 41.5mb │
-└─────┴────────────────┴──────┴──────┴─────────┴─────┴────────┘
+┌─────┬────────────────┬──────┬──────┬─────────┬────────┐
+│ id  │ name           │ mode │  ↺   │ status  │ memory │
+├─────┼────────────────┼──────┼──────┼─────────┼────────┤
+│  7  │ fikri-ai       │ fork │  2   │ online  │ 65.1mb │
+│  0  │ telegram-panel │ fork │  77  │ online  │ 41.5mb │
+└─────┴────────────────┴──────┴──────┴─────────┴────────┘
 ```
 
 ---
@@ -85,8 +84,8 @@ pm2 list
 
 ## 📫 Hire Me
 
-- 💼 **Upwork:** [View Profile](https://www.upwork.com)
-- 🌐 **Braintrust:** [View Profile](https://usebraintrust.com)
+- 💼 **Upwork:** [View Profile](https://www.upwork.com/freelancers/~012fc9851c97860336)
+- 🌐 **Braintrust:** [View Profile](https://app.usebraintrust.com)
 - 📧 **Email:** fikriteacher@gmail.com
 - 📍 **Location:** Tyre, Lebanon (UTC+3) — available for remote work worldwide
 
