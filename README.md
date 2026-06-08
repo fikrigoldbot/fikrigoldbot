@@ -2,7 +2,7 @@
 
 ### Python Bot Engineer · Trading Systems · AI Automation
 
-[![Upwork](https://img.shields.io/badge/Upwork-Available-brightgreen?style=flat&logo=upwork)](https://www.upwork.com/freelancers/~yourprofile)
+[![Upwork](https://img.shields.io/badge/Upwork-Available-brightgreen?style=flat&logo=upwork)]([https://www.upwork.com/freelancers/~yourprofile](https://www.upwork.com/freelancers/~012fc9851c97860336?mp_source=share))
 [![Email](https://img.shields.io/badge/Email-fikriteacher@gmail.com-blue?style=flat&logo=gmail)](mailto:fikriteacher@gmail.com)
 [![Location](https://img.shields.io/badge/Location-Lebanon%20UTC%2B3-orange?style=flat&logo=googlemaps)](https://github.com/fikrigoldbot)
 
